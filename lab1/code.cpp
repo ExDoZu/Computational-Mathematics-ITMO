@@ -6,22 +6,22 @@
 #include <vector>
 
 namespace utils {
-void print_matrix(std::vector<std::vector<double>> const &a) {
-    for (auto const &row : a) {
-        for (auto const &element : row) {
+void print_matrix(std::vector<std::vector<double> > const &a) {
+    for (auto const row : a) {
+        for (auto const element : row) {
             std::cout << std::setw(9) << std::setfill(' ') << element << " ";
         }
         std::cout << std::endl;
     }
 }
 
-void print_entered(std::vector<std::vector<double>> const &a, std::vector<double> const &b, double const eps) {
+void print_entered(std::vector<std::vector<double> > const &a, std::vector<double> const &b, double const eps) {
     std::cout << "Погрешность: " << eps << std::endl;
     std::cout << "Введено СЛАУ:" << std::endl;
     for (size_t i = 0; i < a.size(); i++) {
         for (size_t j = 0; j < a[i].size(); j++) {
             std::cout << a[i][j] << "·x" << j + 1;
-            if (j != a.size() - 1 && a[i][j + 1] > 0) {
+            if (j != a.size() - 1 && a[i][j + 1] >= 0) {
                 std::cout << " + ";
             }
         }
@@ -88,11 +88,11 @@ void set_precision_by_eps(double const eps) {
         eps_copy *= 10;
         precision++;
     }
-    std::cout << std::setprecision(std::max(std::min(precision + 1, 6), 2));
+    std::cout << std::setprecision(std::max(precision + 1, 2));
 }
 }  // namespace utils
 
-bool check_current_diagonal_dominance(std::vector<std::vector<double>> const &a) {
+bool check_current_diagonal_dominance(std::vector<std::vector<double> > const &a) {
     bool flag = false;
     for (size_t i = 0; i < a.size(); i++) {
         double sum = 0;
@@ -110,7 +110,7 @@ bool check_current_diagonal_dominance(std::vector<std::vector<double>> const &a)
     return flag;
 }
 
-bool check_diagonal_dominance(std::vector<std::vector<double>> &a, std::vector<double> &b) {
+bool check_diagonal_dominance(std::vector<std::vector<double> > &a, std::vector<double> &b) {
     if (check_current_diagonal_dominance(a)) {
         return true;
     }
@@ -141,7 +141,7 @@ bool check_diagonal_dominance(std::vector<std::vector<double>> &a, std::vector<d
     if (s.size() != inds_of_max.size()) {
         return false;
     }
-    std::vector<std::vector<double>> const a_old = a;
+    std::vector<std::vector<double> > const a_old = a;
     std::vector<double> const b_old = b;
     for (size_t i = 0; i < a.size(); i++) {
         a[inds_of_max[i]] = a_old[i];
@@ -150,8 +150,8 @@ bool check_diagonal_dominance(std::vector<std::vector<double>> &a, std::vector<d
     return check_current_diagonal_dominance(a);
 }
 
-std::vector<std::vector<double>> calculate_c(std::vector<std::vector<double>> const &a) {
-    std::vector<std::vector<double>> c(a.size(), std::vector<double>(a.size()));
+std::vector<std::vector<double> > calculate_c(std::vector<std::vector<double> > const &a) {
+    std::vector<std::vector<double> > c(a.size(), std::vector<double>(a.size()));
     for (size_t i = 0; i < a.size(); i++) {
         for (size_t j = 0; j < a[i].size(); j++) {
             if (i == j) {
@@ -164,7 +164,7 @@ std::vector<std::vector<double>> calculate_c(std::vector<std::vector<double>> co
     return c;
 }
 
-std::vector<double> calculate_d(std::vector<std::vector<double>> const &a, std::vector<double> const &b) {
+std::vector<double> calculate_d(std::vector<std::vector<double> > const &a, std::vector<double> const &b) {
     std::vector<double> d(a.size());
     for (size_t i = 0; i < a.size(); i++) {
         d[i] = b[i] / a[i][i];
@@ -172,7 +172,7 @@ std::vector<double> calculate_d(std::vector<std::vector<double>> const &a, std::
     return d;
 }
 
-std::vector<double> calculate_new_xk(std::vector<std::vector<double>> const &c, std::vector<double> const &d, std::vector<double> const &xk) {
+std::vector<double> calculate_new_xk(std::vector<std::vector<double> > const &c, std::vector<double> const &d, std::vector<double> const &xk) {
     std::vector<double> new_xk(xk.size());
     for (size_t i = 0; i < xk.size(); i++) {
         new_xk[i] = 0;
@@ -184,10 +184,19 @@ std::vector<double> calculate_new_xk(std::vector<std::vector<double>> const &c, 
     return new_xk;
 }
 
-std::vector<double> calculate_answer(std::vector<std::vector<double>> const &a, std::vector<double> const &b, double const eps, bool const print_info = true) {
-    std::vector<std::vector<double>> const c = calculate_c(a);
+std::vector<double> calculate_answer(std::vector<std::vector<double> > const &a, std::vector<double> const &b, double const eps, bool const print_info = true) {
+    std::vector<std::vector<double> > const c = calculate_c(a);
     std::vector<double> const d = calculate_d(a, b);
     std::vector<double> xk = d;
+
+    size_t max_iter;
+    std::cout << "Введите максимальное число итераций" << std::endl;
+    std::cin >> max_iter;
+
+    std::cout << "Задайте начальное приближение " << std::endl;
+    for (size_t i = 0; i < a.size(); i++) {
+        std::cin >> xk[i];
+    }
     std::cout << std::fixed;
     utils::set_precision_by_eps(eps);
     if (print_info) {
@@ -208,14 +217,16 @@ std::vector<double> calculate_answer(std::vector<std::vector<double>> const &a, 
             std::cout << i << " ";
         }
         std::cout << std::endl
-                  << std::endl;
+                  << std::endl
+                  << "Начальное приближение ";
         utils::print_xk(xk);
     }
     std::vector<double> new_xk;
     std::vector<double> diffs(xk.size());
     bool flag = true;
     size_t iter = 1;
-    while (flag) {
+
+    while (flag && iter <= max_iter) {
         new_xk = calculate_new_xk(c, d, xk);
         flag = false;
         for (size_t i = 0; i < xk.size(); i++) {
@@ -226,17 +237,34 @@ std::vector<double> calculate_answer(std::vector<std::vector<double>> const &a, 
             }
         }
         xk = new_xk;
+
         if (print_info) {
             std::cout << "----- Итерация №" << iter << " -----" << std::endl;
             utils::print_xk(xk);
             utils::print_diffs(diffs);
-            iter++;
+            // тут закостылячил
+            double max_nev = 0;
+            std::cout << "Невязка:" << std::endl;
+            for (size_t i = 0; i < a.size(); i++) {
+                double summm = 0;
+                for (size_t j = 0; j < a.size(); j++) {
+                    summm += a[i][j] * xk[j];
+                }
+                if (std::abs(summm - b[i]) > max_nev) {
+                    max_nev = std::abs(summm - b[i]);
+                }
+                std::cout << std::abs(summm - b[i]) << std::endl;
+                if (max_nev >= eps) {
+                    flag = true;
+                }
+            }
         }
+        iter++;
     }
     return xk;
 }
 
-bool read_from_file(std::ifstream &file, std::vector<std::vector<double>> &a, std::vector<double> &b, double &eps) {
+bool read_from_file(std::ifstream &file, std::vector<std::vector<double> > &a, std::vector<double> &b, double &eps) {
     if (utils::read_on_endl(file, eps)) {
         if (eps <= 0) {
             std::cerr << "Точность должна быть положительным числом." << std::endl;
@@ -274,7 +302,7 @@ bool read_from_file(std::ifstream &file, std::vector<std::vector<double>> &a, st
     return true;
 }
 
-void read_from_terminal(std::vector<std::vector<double>> &a, std::vector<double> &b, double &eps) {
+void read_from_terminal(std::vector<std::vector<double> > &a, std::vector<double> &b, double &eps) {
     auto clear_and_ignore_and_print_error = [] {
         std::cin.clear();
         std::cin.ignore(UINT32_MAX, '\n');
@@ -341,7 +369,7 @@ void read_from_terminal(std::vector<std::vector<double>> &a, std::vector<double>
 }
 
 void solve_sole(int const argc, char const *argv[]) {
-    std::vector<std::vector<double>> a;
+    std::vector<std::vector<double> > a;
     std::vector<double> b;
     double eps;
 
@@ -364,8 +392,17 @@ void solve_sole(int const argc, char const *argv[]) {
             std::cout << "Неверное количество аргументов." << std::endl;
             return;
     }
+    std::cout << std::endl;
     if (!check_diagonal_dominance(a, b)) {
-        std::cout << "Матрица не удовлетворяет условию диагонального преобладания" << std::endl;
+        for (size_t i = 0; i < a.size(); i++) {
+            for (size_t j = 0; j < a.size(); j++) {
+                if (i == j && a[i][j] == 0.0) {
+                    std::cout << "Матрица вырождена." << std::endl;
+                    return;
+                }
+            }
+        }
+        std::cout << "Матрица не удовлетворяет условию диагонального преобладания." << std::endl;
         return;
     }
     utils::print_answer(calculate_answer(a, b, eps));
