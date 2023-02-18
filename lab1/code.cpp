@@ -118,7 +118,7 @@ bool check_diagonal_dominance(std::vector<std::vector<double> > &a, std::vector<
     for (size_t i = 0; i < a.size(); i++) {
         double sum = 0;
         double max = 0;
-        size_t ind_of_max;
+        size_t ind_of_max = 0;
         for (size_t j = 0; j < a[i].size(); j++) {
             double const element = std::abs(a[i][j]);
             sum += element;
