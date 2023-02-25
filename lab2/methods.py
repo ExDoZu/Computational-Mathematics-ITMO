@@ -1,51 +1,5 @@
+from utils import *
 import sys
-
-import matplotlib.pyplot as plt
-from typing import Callable
-
-
-def create_graph(x: list[float], y: list[float], color: str, roots: list[float] = None) -> None:
-    if roots is None:
-        roots = []
-    plt.plot(x, y, color=color)
-    plt.axhline(0, color='black')
-    plt.axvline(0, color='black')
-    plt.grid(True)
-    plt.scatter(roots, [0 for i in range(len(roots))], color='red')
-    plt.show()
-
-
-def calculate_precision(eps: float, num_of_additional_digits: int = 1) -> int:
-    if eps <= 0 or num_of_additional_digits < 0:
-        raise ValueError("(ᇂ_Jᇂ )")
-    precision: int = 0
-    while eps < 1:
-        eps *= 10
-        precision += 1
-    return precision + num_of_additional_digits
-
-
-def derivative(function: Callable[[float], float], x: float, dx: float = 0.0000001) -> float:
-    return (function(x + dx) - function(x)) / dx
-
-
-def derivative_by_x1(function: Callable[[float, float], float], x1: float, x2: float, dx: float = 0.0000001) -> float:
-    return (function(x1 + dx, x2) - function(x1, x2)) / dx
-
-
-def derivative_by_x2(function: Callable[[float, float], float], x1: float, x2: float, dx: float = 0.0000001) -> float:
-    return (function(x1, x2 + dx) - function(x1, x2)) / dx
-
-
-def func(x: float) -> float:
-    return x ** 3 + 4.81 * x ** 2 - 17.37 * x + 5.38
-
-
-def testfunc(x):
-    return x ** 3 - x + 4
-
-
-intervals_of_roots = [(-10, -5), (0, 1), (1, 3)]
 
 
 def chord(function: Callable[[float], float], a: float, b: float, eps: float = 0.01) -> float:
@@ -217,14 +171,3 @@ def newton_system(system: list[Callable[[float, float], float]], eps: float = 0.
         b.clear()
 
     return xs[0], xs[1]
-
-
-def system1() -> list[Callable[[float, float], float]]:
-    def f1(x1: float, x2: float) -> float:
-        return x1 ** 2 + x2 ** 2 - 4
-
-    def f2(x1: float, x2: float) -> float:
-        return -3 * x1 ** 2 + x2
-
-    return [f1, f2]
-
