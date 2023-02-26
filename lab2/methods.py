@@ -76,10 +76,17 @@ def simple_iteration(function: Callable[[float], float], a: float, b: float, eps
 
     lam = -1 / find_max_derivative(int(1 / eps))
     xk = a
+    max_step = 100000000000000000000000000000000
+    fi = abs(1 + lam * derivative(function, xk))
+    if fi >= 1:
+        print(f"|𝜑'({xk})| = {fi:.3f} >= 1")
+        print("Метод не должен сходиться на данном интервале.")
+        max_step = int(input("Введите максимальное количество итераций: "))
+
     new_xk = find_x()
     step = 0
     print_step()
-    while abs(new_xk - xk) > eps:
+    while abs(new_xk - xk) > eps and step < max_step:
         step += 1
         xk = new_xk
         new_xk = find_x()
@@ -151,7 +158,6 @@ def newton_system(system: list[Callable[[float, float], float]], eps: float = 0.
     b: list[float] = list()
     delta_xs: list[float] = [sys.float_info.max, sys.float_info.max]
     step = 0
-    print_step()
     while abs(delta_xs[0]) > eps or abs(delta_xs[1]) > eps:
         step += 1
         for fun in system:
@@ -169,5 +175,4 @@ def newton_system(system: list[Callable[[float, float], float]], eps: float = 0.
         print_step()
         matrix.clear()
         b.clear()
-
     return xs[0], xs[1]

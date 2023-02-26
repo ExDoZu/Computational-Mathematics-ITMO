@@ -1,11 +1,40 @@
+import sys
+
 import matplotlib.pyplot as plt
 from typing import Callable
 
 
-def create_graph(x: list[float], y: list[float], color: str) -> None:
+def find_roots_intervals(function: Callable[[float], float], a: float, b: float, eps: float = 0.01) -> list[
+    tuple[float, float]]:
+    intervals = []
+    x = a
+    right_y = function(x)
+    while x < b:
+        left_y = right_y
+        right_y = function(x + eps)
+        if left_y * right_y < 0:
+            intervals.append((x, x + eps))
+        x += eps
+    return intervals
+
+
+def create_graph(x: list[float], y: list[float], xlim: tuple[float, float], color: str) -> None:
     plt.plot(x, y, color=color)
     plt.axhline(0, color='black')
     plt.axvline(0, color='black')
+    plt.xlim(xlim)
+    miny = sys.float_info.max
+    maxy = sys.float_info.min
+    for i in range(len(x)):
+        if x[i] >= xlim[0]:
+            if x[i] > xlim[1]:
+                break
+            if y[i] < miny:
+                miny = y[i]
+            if y[i] > maxy:
+                maxy = y[i]
+
+    plt.ylim((miny, maxy))
     plt.ylabel('y')
     plt.xlabel('x')
     plt.grid(True)

@@ -2,8 +2,16 @@ from typing import Callable
 import math
 
 
-def testfunc(x):
+def fun1(x):
     return x ** 3 - x + 4
+
+
+def fun2(x):
+    return math.e ** x - 2 * x - 10
+
+
+def fun3(x):
+    return math.sin(x) - x
 
 
 def system1() -> list[Callable[[float, float], float]]:
