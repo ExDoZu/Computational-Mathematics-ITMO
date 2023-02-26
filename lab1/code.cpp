@@ -242,22 +242,22 @@ std::vector<double> calculate_answer(std::vector<std::vector<double> > const &a,
             std::cout << "----- Итерация №" << iter << " -----" << std::endl;
             utils::print_xk(xk);
             utils::print_diffs(diffs);
-            // тут закостылячил
-            double max_nev = 0;
-            std::cout << "Невязка:" << std::endl;
-            for (size_t i = 0; i < a.size(); i++) {
-                double summm = 0;
-                for (size_t j = 0; j < a.size(); j++) {
-                    summm += a[i][j] * xk[j];
-                }
-                if (std::abs(summm - b[i]) > max_nev) {
-                    max_nev = std::abs(summm - b[i]);
-                }
-                std::cout << std::abs(summm - b[i]) << std::endl;
-                if (max_nev >= eps) {
-                    flag = true;
-                }
-            }
+            // тут закостылячил. Стереть, если невязки НЕ нужны         //
+            double max_nev = 0;                                         //
+            std::cout << "Невязка:" << std::endl;                       //
+            for (size_t i = 0; i < a.size(); i++) {                     //
+                double summm = 0;                                       //
+            for (size_t j = 0; j < a.size(); j++) {                     //
+                    summm += a[i][j] * xk[j];                           //
+                }                                                       //
+                if (std::abs(summm - b[i]) > max_nev) {                 //
+                    max_nev = std::abs(summm - b[i]);                   //
+            }                                                           //
+                std::cout << std::abs(summm - b[i]) << std::endl;       //
+                if (max_nev >= eps) {                                   //
+                    flag = true;                                        //
+                }                                                       //
+            }                                                           //
         }
         iter++;
     }
@@ -395,11 +395,9 @@ void solve_sole(int const argc, char const *argv[]) {
     std::cout << std::endl;
     if (!check_diagonal_dominance(a, b)) {
         for (size_t i = 0; i < a.size(); i++) {
-            for (size_t j = 0; j < a.size(); j++) {
-                if (i == j && a[i][j] == 0.0) {
-                    std::cout << "Матрица вырождена." << std::endl;
-                    return;
-                }
+            if (a[i][i] == 0.0) {
+                std::cout << "Матрица вырождена." << std::endl;
+                return;
             }
         }
         std::cout << "Матрица не удовлетворяет условию диагонального преобладания." << std::endl;

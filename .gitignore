@@ -3,3 +3,4 @@
 */file*
 */prog
 *.DS_Store
+*/__pycache__/
