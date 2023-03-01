@@ -41,7 +41,10 @@ def create_graph(x: list[float], y: list[float], xlim: tuple[float, float], colo
     plt.show()
 
 
-def create_graph2(x1: list[float], y1: list[float], x2: list[float], y2: list[float], color1: str, color2: str) -> None:
+def create_graph2(x1: list[float], y1: list[float], x2: list[float], y2: list[float], xlim: tuple[float, float],
+                  color1: str, color2: str) -> None:
+    plt.xlim(xlim)
+    plt.ylim((-(xlim[1] - xlim[0]) / 2, (xlim[1] - xlim[0]) / 2))
     plt.scatter(x1, y1, color=color1, s=1)
     plt.scatter(x2, y2, color=color2, s=1)
     plt.axhline(0, color='black')
@@ -75,7 +78,7 @@ def calculate_graph2(function: Callable[[float, float], float],
             lt = function(xc, yc + step)
             rb = function(xc + step, yc)
             rt = function(xc + step, yc + step)
-            if (lb < 0 or rb < 0 or rt < 0 or lt < 0) and (lb > 0 or rb > 0 or rt > 0 or lt > 0):
+            if (lb <= 0 or rb <= 0 or rt <= 0 or lt <= 0) and (lb >= 0 or rb >= 0 or rt >= 0 or lt >= 0):
                 x.append(xc + step / 2)
                 y.append(yc + step / 2)
             yc += step

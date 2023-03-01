@@ -63,11 +63,13 @@ def task2(function: Callable[[float], float]):
 def task3(system: Callable[[], list[Callable[[float, float], float]]]):
     eps = float(input("Введите точность: "))
     a, b = input_interval()
-    x1, y1 = calculate_graph2(system()[0], a, b)
-    x2, y2 = calculate_graph2(system()[1], a, b)
-    create_graph2(x1, y1, x2, y2, "blue", "red")
+
+    x1, y1 = calculate_graph2(system()[0], a - (b - a), b + (b - a), (b - a) / 200)
+    x2, y2 = calculate_graph2(system()[1], a - (b - a), b + (b - a), (b - a) / 200)
+
+    create_graph2(x1, y1, x2, y2, (a, b), "blue", "red")
     newton_system(system(), eps)
-    create_graph2(x1, y1, x2, y2, "blue", "red")
+    create_graph2(x1, y1, x2, y2, (a, b), "blue", "red")
 
 
 def main():
@@ -81,7 +83,7 @@ def main():
         case 2:
             task2(fun2)
         case 3:
-            task3(system1)
+            task3(system2)
         case _:
             print("Введено что-то не то.")
 

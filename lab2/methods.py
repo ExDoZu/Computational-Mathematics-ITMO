@@ -141,7 +141,8 @@ def secant(function: Callable[[float], float], a: float, b: float, eps: float = 
     return new_xk
 
 
-def newton_system(system: list[Callable[[float, float], float]], eps: float = 0.01) -> tuple[float, float]:
+def newton_system(system: list[Callable[[float, float], float]], eps: float = 0.01) -> tuple[
+    float | None, float | None]:
     def print_step():
         precision = calculate_precision(eps)
         print(f"--------------- Step {step} ---------------------------\n"
@@ -166,7 +167,13 @@ def newton_system(system: list[Callable[[float, float], float]], eps: float = 0.
             row.append(derivative_by_x2(fun, xs[0], xs[1]))
             matrix.append(row)
             b.append(-fun(xs[0], xs[1]))
+        if matrix[0][1] == 0.0 or matrix[1][1] or matrix[1][0] == 0.0:
+            print("Ой-ой-ой. Деление на 0")
+            return None, None
         coef_a = -matrix[1][0] / matrix[1][1] * matrix[0][1] + matrix[0][0]
+        if coef_a == 0.0:
+            print("Ой-ой-ой. Деление на 0")
+            return None, None
         coef_c = -b[1] / matrix[1][1] * matrix[0][1] + b[0]
         delta_xs[0] = coef_c / coef_a
         delta_xs[1] = (b[0] - matrix[0][0] * delta_xs[0]) / matrix[0][1]
