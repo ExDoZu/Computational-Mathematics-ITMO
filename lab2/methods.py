@@ -30,6 +30,42 @@ def chord(function: Callable[[float], float], a: float, b: float, eps: float = 0
     return new_xk
 
 
+def chord_fixed(function: Callable[[float], float], a: float, b: float, eps: float = 0.01) -> float:
+    def print_step() -> None:
+        precision = calculate_precision(eps)
+        print(f"Step {step}: a = {a:.{precision}f}, b = {b:.{precision}f}, x = {new_xk:.{precision}f}, "
+              f"f(a) = {function(a):.{precision}f}, f(b) = {function(b):.{precision}f}, "
+              f"f(x) = {function(new_xk):.{precision}f}, |x_k+1 - x_k| = {abs(new_xk - xk):.{precision}f}")
+
+    def find_x_left_fixed() -> float:
+        return xk - (a - xk) / (function(a) - function(xk)) * function(xk)
+
+    def find_x_right_fixed() -> float:
+        return xk - (b - xk) / (function(b) - function(xk)) * function(xk)
+
+    def derivative2(function: Callable[[float], float], x: float) -> float:
+        return (function(x + eps) + function(x - eps) - 2 * function(x)) / (eps ** 2)
+
+    xk = (a + b) / 2
+    if derivative(function, xk) * derivative2(function, xk) > 0:
+        print("Правая граница фиксирована")
+        find_x = find_x_right_fixed
+        xk = a
+    else:
+        print("Левая граница фиксирована")
+        find_x = find_x_left_fixed
+        xk = b
+    new_xk = find_x()
+    step = 0
+    print_step()
+    while abs(new_xk - xk) > eps:
+        step += 1
+        xk = new_xk
+        new_xk = find_x()
+        print_step()
+    return new_xk
+
+
 # a - default value for x0
 # b - not used
 def newton(function: Callable[[float], float], a: float, b: float, eps: float = 0.01) -> float:
@@ -141,8 +177,7 @@ def secant(function: Callable[[float], float], a: float, b: float, eps: float = 
     return new_xk
 
 
-def newton_system(system: list[Callable[[float, float], float]], eps: float = 0.01) -> tuple[
-    float | None, float | None]:
+def newton_system(system: list[Callable[[float, float], float]], eps: float = .01) -> tuple[float | None, float | None]:
     def print_step():
         precision = calculate_precision(eps)
         print(f"--------------- Step {step} ---------------------------\n"

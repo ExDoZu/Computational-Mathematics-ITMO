@@ -81,7 +81,7 @@ def main():
         case 1:
             task1()
         case 2:
-            task2(fun2)
+            task2(my_function)
         case 3:
             task3(system2)
         case _:
