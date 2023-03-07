@@ -49,8 +49,8 @@ def create_graph2(x1: list[float], y1: list[float], x2: list[float], y2: list[fl
     plt.scatter(x2, y2, color=color2, s=1)
     plt.axhline(0, color='black')
     plt.axvline(0, color='black')
-    plt.ylabel('y')
-    plt.xlabel('x')
+    plt.ylabel('x2')
+    plt.xlabel('x1')
     plt.grid(True)
     plt.show()
 
@@ -101,9 +101,9 @@ def derivative(function: Callable[[float], float], x: float, dx: float = 0.00000
     return (function(x + dx) - function(x)) / dx
 
 
-def derivative_by_x1(function: Callable[[float, float], float], x1: float, x2: float, dx: float = 0.0000001) -> float:
+def derivative_by_x1(function: Callable[[float, float], float], x1: float, x2: float, dx: float = 0.00000001) -> float:
     return (function(x1 + dx, x2) - function(x1, x2)) / dx
 
 
-def derivative_by_x2(function: Callable[[float, float], float], x1: float, x2: float, dx: float = 0.0000001) -> float:
+def derivative_by_x2(function: Callable[[float, float], float], x1: float, x2: float, dx: float = 0.00000001) -> float:
     return (function(x1, x2 + dx) - function(x1, x2)) / dx
