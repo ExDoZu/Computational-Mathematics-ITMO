@@ -46,9 +46,6 @@ def chord_fixed(function: Callable[[float], float], a: float, b: float, eps: flo
     def find_x_right_fixed() -> float:
         return xk - (b - xk) / (function(b) - function(xk)) * function(xk)
 
-    def derivative2(function: Callable[[float], float], x: float) -> float:
-        return (function(x + eps) + function(x - eps) - 2 * function(x)) / (eps ** 2)
-
     xk = (a + b) / 2
     if derivative(function, xk) * derivative2(function, xk) > 0:
         print("Правая граница фиксирована")
@@ -179,16 +176,25 @@ def secant(function: Callable[[float], float], a: float, b: float, eps: float = 
         print(f"Step {step}: x_k-1 = {old_xk:.{precision}f}, x_k = {xk:.{precision}f}, x_k+1 = {new_xk:.{precision}f}, "
               f"f(x_k+1) = {function(new_xk):.{precision}f}, |x_k+1 - x_k| = {abs(new_xk - xk):.{precision}f}")
 
+    if function(a) * derivative2(function, a) > 0:
+        print(f"x0 = {a}")
+        old_xk = a
+    elif function(b) * derivative2(function, b) > 0:
+        print(f"x0 = {b}")
+        old_xk = b
+    else:
+        print(f"Быстрая сходимость не обеспечивается из точки a = {a} и из точки b = {b}.\n")
+        while True:
+            old_xk = float(input(f"Введите начальное приближение x0 из интервала: ({a}, {b}): "))
+            if old_xk <= a or old_xk >= b:
+                print("Число не из интервала")
+            else:
+                break
+
     while True:
-        old_xk = float(input(f"Введите начальное приближение x0 из отрезка: [{a}, {b}]: "))
-        if old_xk < a or old_xk > b:
-            print("Число не из отрезка")
-        else:
-            break
-    while True:
-        xk = float(input(f"Введите начальное приближение x1 из отрезка: [{a}, {b}]: "))
+        xk = float(input(f"Введите начальное приближение x1 из интервала: ({a}, {b}): "))
         if xk < a or xk > b:
-            print("Число не из отрезка")
+            print("Число не из интервала")
         else:
             break
     new_xk = find_x()

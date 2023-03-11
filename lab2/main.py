@@ -12,22 +12,8 @@ def input_interval() -> tuple[float, float]:
     a = float(input("Левая граница интервала: "))
     b = float(input("Правая граница интервала: "))
     if a >= b:
-        raise ("Невозожный интервал")
+        raise ("Невозможный интервал")
     return a, b
-
-
-def task1():
-    x, y = calculate_graph(my_function, -20, 6)
-    create_graph(x, y, (-10, 3), "blue")
-    print("Левый корень. Метод хорд.")
-    a, b = input_interval()
-    chord(my_function, a, b)
-    print("\nЦентральный корень. Метод Ньютона.")
-    a, b = input_interval()
-    newton(my_function, a, b)
-    print("\nПравый корень. Метод простых итераций.")
-    a, b = input_interval()
-    simple_iteration(my_function, a, b)
 
 
 def task2(function: Callable[[float], float]):
@@ -110,13 +96,10 @@ def task3(system: Callable[[], list[Callable[[float, float], float]]]):
 
 def main():
     choice = int(input("Выберите задание:\n"
-                       "1 - вычислительная задача\n"
-                       "2 - программная задача. Нелинейное уравнение\n"
-                       "3 - программная задача. Система нелинейных уравнений\n"))
+                       "1 - программная задача. Нелинейное уравнение\n"
+                       "2 - программная задача. Система нелинейных уравнений\n"))
     match choice:
         case 1:
-            task1()
-        case 2:
             choice_eq = int(input("Выберите уравнение:\n"
                                   "1 - x^3 + 4.81x^2 - 17.37x + 5.38\n"
                                   "2 - e^x - 2x - 10\n"
@@ -133,7 +116,7 @@ def main():
                     print("Введено что-то не то.")
                     return
             task2(chosen_function)
-        case 3:
+        case 2:
             choice_sys = int(input("Выберите систему:\n"
                                    "1) x1^2 + x2^ 2 - 4 = 0\n"
                                    "   -3 * x1^2 + x2 = 0\n"

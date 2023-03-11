@@ -101,6 +101,10 @@ def derivative(function: Callable[[float], float], x: float, dx: float = 0.00000
     return (function(x + dx) - function(x)) / dx
 
 
+def derivative2(function: Callable[[float], float], x: float, dx: float = 0.0001) -> float:
+    return (function(x + dx) + function(x - dx) - 2 * function(x)) / (dx ** 2)
+
+
 def derivative_by_x1(function: Callable[[float, float], float], x1: float, x2: float, dx: float = 0.00000001) -> float:
     return (function(x1 + dx, x2) - function(x1, x2)) / dx
 
