@@ -80,7 +80,15 @@ def newton(function: Callable[[float], float], a: float, b: float, eps: float = 
               f"f'(x_k) = {derivative(function, xk):.{precision}f}, x_k+1 = {new_xk:.{precision}f}, "
               f"|x_k+1 - x_k| = {abs(new_xk - xk):.{precision}f}")
 
-    xk = a
+    if function(a) * derivative2(function, a) > 0:
+        print(f"x0 = {a}")
+        xk = a
+    elif function(b) * derivative2(function, b) > 0:
+        print(f"x0 = {b}")
+        xk = b
+    else:
+        print(f"Быстрая сходимость не обеспечивается из точки a = {a} и из точки b = {b}.\n")
+        xk = a
     new_xk = find_x()
     step = 0
     print_step()
