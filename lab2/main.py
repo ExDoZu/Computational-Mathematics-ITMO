@@ -16,6 +16,20 @@ def input_interval() -> tuple[float, float]:
     return a, b
 
 
+def task1():
+    x, y = calculate_graph(my_function, -20, 6)
+    create_graph(x, y, (-10, 3), "blue")
+    print("Левый корень. Метод хорд.")
+    a, b = -10, -5
+    chord(my_function, a, b)
+    print("\nЦентральный корень. Метод Ньютона.")
+    a, b = 0, 1
+    newton(my_function, a, b)
+    print("\nПравый корень. Метод простых итераций.")
+    a, b = 1, 3
+    simple_iteration(my_function, a, b)
+
+
 def task2(function: Callable[[float], float]):
     if function == my_function:
         x, y = calculate_graph(function, -12, 5)

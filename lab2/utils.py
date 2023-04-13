@@ -14,6 +14,8 @@ def find_roots_intervals(function: Callable[[float], float], a: float, b: float,
         right_y = function(x + eps)
         if left_y * right_y < 0:
             intervals.append((x, x + eps))
+        elif right_y == 0:
+            intervals.append((right_y - eps / 2, right_y + eps / 2))
         x += eps
     return intervals
 

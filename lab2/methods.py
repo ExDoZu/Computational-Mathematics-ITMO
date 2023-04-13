@@ -13,7 +13,15 @@ def chord(function: Callable[[float], float], a: float, b: float, eps: float = 0
               f"f(a) = {function(a):.{precision}f}, f(b) = {function(b):.{precision}f}, "
               f"f(x) = {function(new_xk):.{precision}f}, |x_k+1 - x_k| = {abs(new_xk - xk):.{precision}f}")
 
-    xk = a
+    if function(a) * derivative2(function, a) > 0:
+        print(f"x0 = {a}")
+        xk = a
+    elif function(b) * derivative2(function, b) > 0:
+        print(f"x0 = {b}")
+        xk = b
+    else:
+        print(f"Быстрая сходимость не обеспечивается из точки a = {a} и из точки b = {b}.\n")
+        xk = a
     new_xk = find_x()
     y = function(new_xk)
     step = 0
@@ -131,7 +139,15 @@ def simple_iteration(function: Callable[[float], float], a: float, b: float, eps
     if fi >= 1 or fi2 >= 1:
         print("Метод не должен сходиться на данном интервале.")
         max_step = int(input("Введите максимальное количество итераций: "))
-    xk = float(input("Введите начальное приближение x0: "))
+    if function(a) * derivative2(function, a) > 0:
+        print(f"x0 = {a}")
+        xk = a
+    elif function(b) * derivative2(function, b) > 0:
+        print(f"x0 = {b}")
+        xk = b
+    else:
+        print(f"Быстрая сходимость не обеспечивается из точки a = {a} и из точки b = {b}.\n")
+        xk = a
     new_xk = find_x()
     step = 0
     print_step()
@@ -153,14 +169,9 @@ def bisection(function: Callable[[float], float], a: float, b: float, eps: float
               f"f(a) = {function(a):.{precision}f}, f(b) = {function(b):.{precision}f}, "
               f"f(x) = {function(xk):.{precision}f}, |a-b| = {abs(a - b):.{precision}f}")
 
-    while True:
-        xk = float(input(f"Введите начальное приближение x0 из отрезка: [{a}, {b}]: "))
-        if xk < a or xk > b:
-            print("Число не из отрезка")
-        else:
-            break
     step = 0
     print_step()
+    xk = (a + b) / 2
     while abs(b - a) > eps or abs(function(xk)) > eps:
         step += 1
         if function(a) * function(xk) < 0:
@@ -225,8 +236,8 @@ def newton_system(system: list[Callable[[float, float], float]], eps: float = .0
         precision = calculate_precision(min_value)
         print(f"--------------- Step {step} ---------------------------\n"
               f"X = ({xs[0]:.{precision}}, {xs[1]:.{precision}})\n"
-              f"|x_0^k+1 - x_0^k| = {delta_xs[0]:.{precision}f}\n"
-              f"|x_1^k+1 - x_1^k| = {delta_xs[1]:.{precision}f}")
+              f"|x_0^k+1 - x_0^k| = {abs(delta_xs[0]):.{precision}f}\n"
+              f"|x_1^k+1 - x_1^k| = {abs(delta_xs[1]):.{precision}f}")
 
     print("Введите начальное приближение:")
     xs: list[float] = list()
@@ -267,7 +278,7 @@ def newton_system(system: list[Callable[[float, float], float]], eps: float = .0
         det = matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]
         if det == 0.0:
             print(f"--------------- Step {step} ---------------------------\n"
-                  "Matrix:\n"
+                  "Матрица Якоби:\n"
                   f"{matrix[0][0]} {matrix[0][1]} | {b[0]}\n"
                   f"{matrix[1][0]} {matrix[1][1]} | {b[1]}")
             print("Не удалось найти решение. Метод не сходится из заданной точки.")
