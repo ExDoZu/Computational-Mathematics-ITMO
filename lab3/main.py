@@ -17,9 +17,7 @@ def calculate_with_runge_rule(method: Method, function: Function, a: float, b: f
 
 
 if __name__ == '__main__':
-    print(math.log(1))
     function = choose("функцию", functions)
-
     a = read_number("Введите нижний предел интегрирования: ")
     b = read_number("Введите верхний предел интегрирования: ", lambda x: x > a)
     if a <= 0 <= b and function.text == "1/x":
