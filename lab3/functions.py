@@ -8,10 +8,7 @@ class Function:
         self.text = text
 
     def __call__(self, x: float):
-        try:
-            return self.func(x)
-        except (ValueError, ZeroDivisionError):
-            return 0
+        return self.func(x)
 
     def __str__(self):
         return self.text
