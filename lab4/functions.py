@@ -13,7 +13,7 @@ def log_func(x: float, params: list[float]):
         raise ValueError("params must be of length 2")
     if x <= 0:
         raise ValueError("x must be positive")
-    return params[0] * math.log(x) + params[1]
+    return params[1] * math.log(x) + params[0]
 
 
 def pow_func(x: float, params: list[float]):

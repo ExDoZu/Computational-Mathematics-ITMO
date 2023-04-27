@@ -81,7 +81,7 @@ def print_func_quality(function: Callable, params: list, points: list, name: str
     print()
 
 
-points = read_points('points2')
+points = read_points('points7')
 
 linear_params = solve_polynom(points, 1)
 double_params = solve_polynom(points, 2)
@@ -123,6 +123,9 @@ end_x = max(points, key=lambda x: x[0])[0] + 10
 
 plt.xlim(min(points, key=lambda x: x[0])[0] - 1, max(points, key=lambda x: x[0])[0] + 1)
 plt.ylim(min(points, key=lambda x: x[1])[1] - 1, max(points, key=lambda x: x[1])[1] + 1)
+plt.axhline(y=0, color='k')
+plt.axvline(x=0, color='k')
+plt.grid()
 x = np.linspace(start_x, end_x, 1000)
 
 liny = [polynom(x, linear_params) for x in x]
@@ -151,7 +154,15 @@ plt.show()
 def draw_one(function: Callable, params: list, points: list):
     plt.xlim(min(points, key=lambda x: x[0])[0] - 1, max(points, key=lambda x: x[0])[0] + 1)
     plt.ylim(min(points, key=lambda x: x[1])[1] - 1, max(points, key=lambda x: x[1])[1] + 1)
-    plt.plot(x, [function(x, params) for x in x])
+    plt.grid()
+    plt.axhline(y=0, color='k')
+    plt.axvline(x=0, color='k')
+
+    xxx = x
+    try:
+        plt.plot(x, [function(x, params) for x in xxx])
+    except:
+        plt.plot([x for x in xxx if x>0], [function(x, params) for x in xxx if x > 0])
     plt.scatter([x for x, y in points], [y for x, y in points])
     plt.show()
 
