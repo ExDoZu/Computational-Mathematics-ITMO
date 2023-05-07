@@ -12,6 +12,7 @@ input_method = choose("метод ввода", input_methods)
 match input_method:
     case "Файл данных":
         points = read_points(file_name)
+        fun = None
         if len(points) < 2:
             print(f"{len(points)} точек. Должно быть минимум 2")
             exit(1)
@@ -30,8 +31,11 @@ print_points(points)
 
 x = read_number("Введите X: ", lambda x: points[0][0] <= x <= points[-1][0])
 
-x_array = np.linspace(points[0][0], points[-1][0], 1000)
 plt.scatter([point[0] for point in points], [point[1] for point in points], label="Точки")
+x_array = np.linspace(points[0][0], points[-1][0], 1000)
+if fun is not None:
+    y_array_original = [fun(x) for x in x_array]
+    plt.plot(x_array, y_array_original, label=fun)
 
 print("\nМетод Лагранжа")
 print(lagrange(points, x), end="\n\n")
