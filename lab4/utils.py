@@ -25,7 +25,8 @@ def pearson_coef(points: list):
     return (n * xy_sum - x_sum * y_sum) / \
         ((n * x2_sum - x_sum ** 2) * (n * y2_sum - y_sum ** 2)) ** 0.5
 
-def pearson_coef2(points:list):
+
+def pearson_coef2(points: list):
     xmean = sum([x for x, y in points]) / len(points)
     ymean = sum([y for x, y in points]) / len(points)
     xstd = sum([(x - xmean) ** 2 for x, y in points]) ** 0.5

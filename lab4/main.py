@@ -81,8 +81,7 @@ def print_func_quality(function: Callable, params: list, points: list, name: str
     print()
 
 
-points = read_points('points7')
-
+points = read_points('points8')
 linear_params = solve_polynom(points, 1)
 double_params = solve_polynom(points, 2)
 triple_params = solve_polynom(points, 3)
@@ -102,17 +101,24 @@ print_func_quality(exp_func, exp_params, points, "Экспоненциальна
 print_data = [create_frame_line(polynom, linear_params, points),
               create_frame_line(polynom, double_params, points),
               create_frame_line(polynom, triple_params, points),
-              create_frame_line(log_func, log_params, points),
-              create_frame_line(pow_func, pow_params, points),
-              create_frame_line(exp_func, exp_params, points)
               ]
 
-frame = pd.DataFrame(print_data, columns=["a0", "a1", "a2", "a3", "S", "σ"], index=["Линейная", "Полином 2 степени",
-                                                                                    "Полином 3 степени",
-                                                                                    "Логарифмическая",
-                                                                                    "Степенная", "Экспоненциальная"])
+indexes = ["Линейная", "Полином 2 степени", "Полином 3 степени"]
+if log_params is not None:
+    print_data.append(create_frame_line(log_func, log_params, points))
+    indexes.append("Логарифмическая")
+if pow_params is not None:
+    print_data.append(create_frame_line(pow_func, pow_params, points))
+    indexes.append("Степенная")
+if exp_params is not None:
+    print_data.append(create_frame_line(exp_func, exp_params, points))
+    indexes.append("Экспоненциальная")
+
+frame = pd.DataFrame(print_data, columns=["a0", "a1", "a2", "a3", "S", "σ"], index=indexes)
 
 frame = frame.sort_values(by=["σ"])
+
+frame = frame.fillna('—')
 
 print(frame.to_string())
 name_of_the_best = frame.index[0]
@@ -162,7 +168,7 @@ def draw_one(function: Callable, params: list, points: list):
     try:
         plt.plot(x, [function(x, params) for x in xxx])
     except:
-        plt.plot([x for x in xxx if x>0], [function(x, params) for x in xxx if x > 0])
+        plt.plot([x for x in xxx if x > 0], [function(x, params) for x in xxx if x > 0])
     plt.scatter([x for x, y in points], [y for x, y in points])
     plt.show()
 
