@@ -34,6 +34,7 @@ x = read_number("Введите X: ", lambda x: points[0][0] <= x <= points[-1][
 plt.scatter([point[0] for point in points], [point[1] for point in points], label="Точки")
 x_array = np.linspace(points[0][0], points[-1][0], 1000)
 if fun is not None:
+    print(f"\nНастоящее значение f({x}) = {fun(x)}")
     y_array_original = [fun(x) for x in x_array]
     plt.plot(x_array, y_array_original, label=fun)
 
