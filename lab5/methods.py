@@ -93,7 +93,7 @@ def second_newton(points, x) -> (float, list[list[float]]):
 
 
 def fixed_combined_newton(points, x, calc_base_index=False) -> (float, list[list[float]]):
-    """Интерполяциия Ньютона для равноотстоящих узлов"""
+    """Интерполяция Ньютона для равноотстоящих узлов"""
     if x <= (points[0][0] + points[-1][0]) / 2:
         return first_newton(points, x, calc_base_index)
     else:
@@ -164,7 +164,7 @@ def stirling(points, x):
         second_fd = _finite_difference(points, index - 1, i, finite_difference_table)
         third_fd = _finite_difference(points, index - 1, i + 1, finite_difference_table)
         top_t *= (t ** 2 - (i // 2) ** 2)
-        first_summand = top_t / t / math.factorial(i) * (first_fd + second_fd) / 2
+        first_summand = top_t / (t if t != 0 else 1) / math.factorial(i) * (first_fd + second_fd) / 2
         second_summand = top_t / math.factorial(i + 1) * third_fd
         summ += first_summand + second_summand
         index -= 1

@@ -5,7 +5,7 @@ from functions import *
 import matplotlib.pyplot as plt
 import numpy as np
 
-file_name = "points4"
+file_name = "points1"
 input_methods = ["Файл данных", "Функция"]
 input_method = choose("метод ввода", input_methods)
 
@@ -37,11 +37,11 @@ if fun is not None:
     print(f"\nНастоящее значение f({x}) = {fun(x)}")
     y_array_original = [fun(x) for x in x_array]
     plt.plot(x_array, y_array_original, label=fun)
-
+# -----------------------------------------------------------------------------------------------------------------------
 print("\nМетод Лагранжа")
 print(lagrange(points, x), end="\n\n")
 plt.plot(x_array, [lagrange(points, x) for x in x_array], label="Лагранж")
-
+# -----------------------------------------------------------------------------------------------------------------------
 print("Метод Ньютона")
 print(newton(points, x), end="\n\n")
 plt.plot(x_array, [newton(points, x) for x in x_array], label="Ньютон")
@@ -54,13 +54,19 @@ def print_combined_answer(points, x, method):
     print(make_finite_difference_table(table).to_string(), end="\n\n")
 
 
+# -----------------------------------------------------------------------------------------------------------------------
 print("Метод Ньютона с фиксированным шагом")
 if not is_equidistant(points):
     print("Точки не равноотстоящие, метод не применим", end="\n\n")
 else:
-    print_combined_answer(points, x, fixed_combined_newton)
+    # print_combined_answer(points, x, fixed_combined_newton)
+
+    answer, table = fixed_combined_newton(points, x)
+    print("Ответ:", answer, end="\n\n")
+
     plt.plot(x_array, [fixed_combined_newton(points, x)[0] for x in x_array], label="Ньютон с фиксированным шагом")
 
+# -----------------------------------------------------------------------------------------------------------------------
 print("Метод Гаусса")
 if not is_equidistant(points):
     print("Точки не равноотстоящие, метод не применим", end="\n\n")
@@ -69,23 +75,31 @@ elif len(points) % 2 == 0:
 else:
     print_combined_answer(points, x, combined_gauss)
     plt.plot(x_array, [combined_gauss(points, x)[0] for x in x_array], label="Гаусс")
-
+# -----------------------------------------------------------------------------------------------------------------------
 print("Метод Стирлинга")
 if not is_equidistant(points):
     print("Точки не равноотстоящие, метод не применим", end="\n\n")
 elif len(points) % 2 == 0:
     print("Четное количество точек, метод не применим", end="\n\n")
 else:
-    print_combined_answer(points, x, stirling)
-    plt.plot(x_array, [stirling(points, x)[0] for x in x_array], label="Стирлинг")
+    # print_combined_answer(points, x, stirling)
 
+    answer, table = stirling(points, x)
+    print("Ответ:", answer, end="\n\n")
+
+    plt.plot(x_array, [stirling(points, x)[0] for x in x_array], label="Стирлинг")
+# -----------------------------------------------------------------------------------------------------------------------
 print("Метод Бесселя")
 if not is_equidistant(points):
     print("Точки не равноотстоящие, метод не применим", end="\n\n")
 elif len(points) % 2 != 0:
     print("Нечетное количество точек, метод не применим", end="\n\n")
 else:
-    print_combined_answer(points, x, bessel)
+    # print_combined_answer(points, x, bessel)
+
+    answer, table = bessel(points, x)
+    print("Ответ:", answer)
+
     plt.plot(x_array, [bessel(points, x)[0] for x in x_array], label="Бессель")
 
 plt.legend()
