@@ -17,7 +17,7 @@ c = sympy.symbols("c")
 c = sympy.solve(orig(x0, c) - y0, c)[0]  # constant
 
 
-def solve(x0: float, y0: float, h: float, xn: float, eq: Equation, method: Method, plt):
+def solve(x0: float, y0: float, h: float, xn: float, eq: Equation, method: Method, plt, orig_points):
     print(method)
     points = method(x0, y0, h, xn, eq)
     if method.name == "Метод Эйлера":
@@ -41,6 +41,8 @@ def solve(x0: float, y0: float, h: float, xn: float, eq: Equation, method: Metho
     print_points(points)
     if r != -1:
         print(f"R = {r} <= {eps}")
+    else:
+        print(f"eps = {max(abs(np.array(points)[:, 1] - np.array(orig_points)[:, 1]))}")
     plt.plot(np.array(points)[:, 0], np.array(points)[:, 1], label=method)
     return points
 
@@ -53,9 +55,7 @@ orig_graph_points = [(x, orig(x, c)) for x in np.arange(x0, xn + 1e-6, h / 100)]
 plt.plot(np.array(orig_graph_points)[:, 0], np.array(orig_graph_points)[:, 1], label=eq.orig_str(c))
 
 for method in methods:
-    ys = np.array(solve(x0, y0, h, xn + 1e-9, eq, method, plt))[:, 1]
-    if method.name == "Метод Милна" or method.name == "Метод Адамса":
-        print(f"eps = {max(abs(ys - np.array(orig_points)[:, 1]))}")
+    solve(x0, y0, h, xn + 1e-9, eq, method, plt, orig_points)
 
 plt.legend()
 plt.axhline(y=0, color='k')

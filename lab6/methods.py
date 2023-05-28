@@ -94,8 +94,8 @@ def adams(data: list[tuple[float, float]], h: float, xn: float, derivative: Call
     return result
 
 
-def milne(data: list[tuple[float, float]], h: float, xn: float, derivative: Callable[[float, float], float],
-          precision=1e-6) -> list[tuple[float, float]]:
+def milne(data: list[tuple[float, float]], h: float, xn: float, derivative: Callable[[float, float], float]) \
+        -> list[tuple[float, float]]:
     """
     Метод Милна
     :param data: содержится минимум 4 заранее вычисленных значения.
@@ -110,7 +110,7 @@ def milne(data: list[tuple[float, float]], h: float, xn: float, derivative: Call
         df = [derivative(x, y) for x, y in result[len(result) - 3:]]
         y_pred = result[-4][1] + 4 / 3 * h * (2 * df[-3] - df[-2] + 2 * df[-1])
         y_corr = calc_y_corr()
-        while abs(y_pred - y_corr) < precision:
+        while abs(y_pred - y_corr) > 1e-6:
             y_pred = y_corr
             y_corr = calc_y_corr()
         result.append((result[-1][0] + h, y_corr))
