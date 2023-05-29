@@ -16,7 +16,7 @@ class Equation:
     def __call__(self, x: float, y: float) -> float:
         return self.derivative(x, y)
 
-    def orig_str(self, c: float = 0.0):
+    def orig_str(self, c: float):
         if c < 0:
             return self.text_orig.lower().replace("+c", f"{c:.3f}")
         return self.text_orig.lower().replace("c", f"{c:.3f}")
