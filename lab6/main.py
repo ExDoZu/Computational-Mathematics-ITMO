@@ -8,17 +8,17 @@ from utils import *
 eq = choose("уравнение", equations)
 orig = eq.orig
 
-# x0 = read_number("Введите x0: ")
-# xn = read_number("Введите xn: ")
-# y0 = read_number("Введите y0: ")
-# h = read_number("Введите шаг: ")
-# eps = read_number("Введите точность: ")
+x0 = read_number("Введите x0: ")
+xn = read_number("Введите xn: ")
+y0 = read_number("Введите y0: ")
+h = read_number("Введите шаг: ")
+eps = read_number("Введите точность: ")
 
-x0 = 1
-xn = 3
-y0 = -1
-h = 0.3
-eps = 0.001
+# x0 = 1
+# xn = 3
+# y0 = -1
+# h = 0.3
+# eps = 0.001
 
 c = sympy.symbols("c")
 c = sympy.solve(orig(x0, c) - y0, c)[0]  # constant
@@ -44,14 +44,17 @@ def solve(x0: float, y0: float, h: float, xn: float, eps: float, eq: Equation, m
                 points = points_half
                 h_half /= 2
                 points_half = method(x0, y0, h_half, xn, eq)
+            print(f"h = {h_half * 2}")
         else:
             h = points[1][0] - points[0][0]
+            print(f"h = {h}")
             points_half = method(x0, y0, h / 2, xn, eq)
         print_points(points)
         print(f"R = {abs(points[-1][1] - points_half[-1][1]) / (2 ** method.p - 1)} <= {eps}")
 
     else:
         cur_eps = max(abs(np.array(points)[:, 1] - np.array(orig_points)[:, 1]))
+        print("Max original eps:", cur_eps)
         while cur_eps > eps:
             h /= 2
             points = method(x0, y0, h, xn, eq)
@@ -79,6 +82,7 @@ for method in methods:
         print(f"Не получилось решить ОДУ.\n"
               f"{method.name} не в состоянии эффективно решить это ОДУ,\n"
               f"либо функция прерывается на заданном интервале.\n")
+        print(e)
         plt.ylim(-10, 10)
 
 plt.legend()
