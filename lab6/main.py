@@ -8,11 +8,18 @@ from utils import *
 eq = choose("уравнение", equations)
 orig = eq.orig
 
-x0 = read_number("Введите x0: ")
-xn = read_number("Введите xn: ")
-y0 = read_number("Введите y0: ")
-h = read_number("Введите шаг: ")
-eps = read_number("Введите точность: ")
+# x0 = read_number("Введите x0: ")
+# xn = read_number("Введите xn: ")
+# y0 = read_number("Введите y0: ")
+# h = read_number("Введите шаг: ")
+# eps = read_number("Введите точность: ")
+
+x0 = 1
+xn = 3
+y0 = -1
+h = 0.3
+eps = 0.001
+
 c = sympy.symbols("c")
 c = sympy.solve(orig(x0, c) - y0, c)[0]  # constant
 
@@ -25,9 +32,10 @@ else:
     xn = new_xn
 
 
-def solve(x0: float, y0: float, h: float, xn: float, eq: Equation, method: Method, plt, orig_points):
+def solve(x0: float, y0: float, h: float, xn: float, eps: float, eq: Equation, method: Method, plt, orig_points,
+          end_runge_rule: bool):
     print(method)
-    points = method(x0, y0, h, xn, eq)
+    points = method(x0, y0, h, xn, eq, None if end_runge_rule else eps)
     if method.name == "Метод Эйлера":
         p = 1
     elif method.name == "Мод. метод Эйлера":
@@ -36,19 +44,21 @@ def solve(x0: float, y0: float, h: float, xn: float, eq: Equation, method: Metho
         p = 4
     else:
         p = 0
-        r = -1
-    if p != 0:
-        h_half = h / 2
-        points_half = method(x0, y0, h_half, xn, eq)
-        while abs(points[-1][1] - points_half[-1][1]) / (2 ** p - 1) > eps:
-            points = points_half
-            h_half = h / 2
-            points_half = method(x0, y0, h_half, xn, eq)
-        r = abs(points[-1][1] - points_half[-1][1]) / (2 ** p - 1)
 
-    if r != -1:
+    if p != 0:
+        if end_runge_rule:
+            h_half = h / 2
+            points_half = method(x0, y0, h_half, xn, eq, None if end_runge_rule else eps)
+            while abs(points[-1][1] - points_half[-1][1]) / (2 ** p - 1) > eps:
+                points = points_half
+                h_half /= 2
+                points_half = method(x0, y0, h_half, xn, eq)
+        else:
+            h = points[1][0] - points[0][0]
+            points_half = method(x0, y0, h / 2, xn, eq)
         print_points(points)
-        print(f"R = {r} <= {eps}")
+        print(f"R = {abs(points[-1][1] - points_half[-1][1]) / (2 ** p - 1)} <= {eps}")
+
     else:
         cur_eps = max(abs(np.array(points)[:, 1] - np.array(orig_points)[:, 1]))
         while cur_eps > eps:
@@ -71,12 +81,14 @@ print()
 orig_graph_points = [(x, orig(x, c)) for x in np.arange(x0, xn + 1e-6, h / 100)]
 plt.plot(np.array(orig_graph_points)[:, 0], np.array(orig_graph_points)[:, 1], label=eq.orig_str(c))
 
-try:
-    for method in methods:
-        solve(x0, y0, h, xn, eq, method, plt, orig_points)
-except Exception as e:
-    print("Не получилось решить ОДУ. Вероятно, функция не определена в некоторых точках.")
-    plt.ylim(-10, 10)
+for method in methods:
+    try:
+        solve(x0, y0, h, xn, eps, eq, method, plt, orig_points, False)
+    except Exception as e:
+        print(f"Не получилось решить ОДУ.\n"
+              f"{method.name} не в состоянии эффективно решить это ОДУ,\n"
+              f"либо функция прерывается на заданном интервале.\n")
+        plt.ylim(-10, 10)
 
 plt.legend()
 plt.axhline(y=0, color='k')

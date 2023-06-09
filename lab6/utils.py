@@ -15,7 +15,19 @@ def find_root(function: Callable[[float], float], a: float, b: float, eps: float
 
 
 def print_points(points):
-    print(pd.DataFrame(list(zip(*points)), index=["X", "Y"]).to_string())
+    if len(points) > 512:
+        i = 9
+        print(f"Количество точек: {len(points)}")
+        while 2 ** i < len(points):
+            i += 1
+        i -= 4
+        new_points = list()
+        for i in range(0, len(points), 2 ** i):
+            new_points.append(points[i])
+        new_points.append(points[-1])
+        print(pd.DataFrame(list(zip(*new_points)), index=["X", "Y"]).to_string())
+    else:
+        print(pd.DataFrame(list(zip(*points)), index=["X", "Y"]).to_string())
 
 
 def step(points):
