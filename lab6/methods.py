@@ -3,11 +3,16 @@ from utils import print_points
 
 
 class Method:
+
     def __init__(self, method: Callable[
         [float, float, float, float, Callable[[float, float], float], float], list[tuple[float, float]]],
-                 name: str):
+                 name: str,
+                 single_step: bool,
+                 p: int):
         self.method = method
         self.name = name
+        self.single_step = single_step
+        self.p = p
 
     def __call__(self, x0: float,
                  y0: float,
@@ -33,6 +38,8 @@ def _update_result_runge_rule(result: list, xn: float, h: float, derivative: Cal
         if abs(h_pair[1] - half_h_pair[1]) / (2 ** p - 1) > eps:
             h /= 2
             half_h /= 2
+            if half_h < 1e-4:
+                raise ValueError("Too short step")
             result = result[:1]
             half_result = half_result[:1]
         else:
@@ -193,8 +200,8 @@ def rk4_adams(x0: float,
 
 
 methods = [
-    Method(euler, "Метод Эйлера"),
-    Method(mod_euler, "Мод. метод Эйлера"),
-    Method(rk4, "Метод Рунге-Кутты 4 порядка"),
-    Method(rk4_adams, "Метод Адамса"),
-    Method(rk4_milne, "Метод Милна")]
+    Method(euler, "Метод Эйлера", True, 1),
+    Method(mod_euler, "Мод. метод Эйлера", True, 2),
+    Method(rk4, "Метод Рунге-Кутты 4 порядка", True, 4),
+    Method(rk4_adams, "Метод Адамса", False, 4),
+    Method(rk4_milne, "Метод Милна", False, 4)]

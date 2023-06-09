@@ -36,20 +36,11 @@ def solve(x0: float, y0: float, h: float, xn: float, eps: float, eq: Equation, m
           end_runge_rule: bool):
     print(method)
     points = method(x0, y0, h, xn, eq, None if end_runge_rule else eps)
-    if method.name == "Метод Эйлера":
-        p = 1
-    elif method.name == "Мод. метод Эйлера":
-        p = 2
-    elif method.name == "Метод Рунге-Кутты 4 порядка":
-        p = 4
-    else:
-        p = 0
-
-    if p != 0:
+    if method.single_step:
         if end_runge_rule:
             h_half = h / 2
             points_half = method(x0, y0, h_half, xn, eq, None if end_runge_rule else eps)
-            while abs(points[-1][1] - points_half[-1][1]) / (2 ** p - 1) > eps:
+            while abs(points[-1][1] - points_half[-1][1]) / (2 ** method.p - 1) > eps:
                 points = points_half
                 h_half /= 2
                 points_half = method(x0, y0, h_half, xn, eq)
@@ -57,7 +48,7 @@ def solve(x0: float, y0: float, h: float, xn: float, eps: float, eq: Equation, m
             h = points[1][0] - points[0][0]
             points_half = method(x0, y0, h / 2, xn, eq)
         print_points(points)
-        print(f"R = {abs(points[-1][1] - points_half[-1][1]) / (2 ** p - 1)} <= {eps}")
+        print(f"R = {abs(points[-1][1] - points_half[-1][1]) / (2 ** method.p - 1)} <= {eps}")
 
     else:
         cur_eps = max(abs(np.array(points)[:, 1] - np.array(orig_points)[:, 1]))
@@ -83,7 +74,7 @@ plt.plot(np.array(orig_graph_points)[:, 0], np.array(orig_graph_points)[:, 1], l
 
 for method in methods:
     try:
-        solve(x0, y0, h, xn, eps, eq, method, plt, orig_points, False)
+        solve(x0, y0, h, xn, eps, eq, method, plt, orig_points, True)
     except Exception as e:
         print(f"Не получилось решить ОДУ.\n"
               f"{method.name} не в состоянии эффективно решить это ОДУ,\n"
